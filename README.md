@@ -25,7 +25,7 @@ converts any .jpg images in the <code>images</code> subdirectory to ppm format.
 
 If compilation has gone smoothly,
 
-make test
+$ make test
 
 will try an example projection, displaying the result with the
 ImageMagick display utility. The test assumes there is file called
