@@ -195,7 +195,7 @@ static void GetLine (char* &dataptr, char* dataend,
 // In header, blank lines & lines starting with '#' are ignored
 void Image::Read (const char* filename, bool writeable)
 {
-  int fd = -1;
+  long fd = -1;
   struct stat filestat;
   size_t filesize = 0;
   char *filebuffer = NULL;
@@ -272,7 +272,7 @@ void Image::Write (const char* filename) const
     if (write(fd, header, strlen(header)) < 0) {
       syserror("write failed");
     }
-    datasize = width * height * 3;
+    datasize = (long) width * height * 3;
     char *dataptr = data;
     while (datasize > 0) {
       ssize_t written = write(fd, dataptr, datasize);
