@@ -157,6 +157,6 @@ class Image {
   char *data;
   void *mmapdata;
   unsigned long mmapsize;
-  int mmapfd;
+  long mmapfd;
 };
 #endif
