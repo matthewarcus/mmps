@@ -202,7 +202,7 @@ void Image::Read (const char* filename, bool writeable)
   char *fileend = NULL;
   char *fileptr = NULL;
   char linebuffer[LINELENGTH];
-  int w; int h; int ncolors; int datasize;
+  int w; int h; int ncolors; long datasize;
 
   fd = open(filename, writeable ? O_RDWR : O_RDONLY);
   if (fd < 0) {
@@ -239,7 +239,7 @@ void Image::Read (const char* filename, bool writeable)
   if (ncolors != 255){
     error("Unexpected number of colors\n");
   }
-  datasize = w*h*3;
+  datasize = (long) w*h*3;
   // Now we hope that fileptr is pointing at the rgb data
   if (fileend - fileptr != datasize) {
     error("Not enough data in file\n");
