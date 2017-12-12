@@ -254,7 +254,7 @@ void Image::Write (const char* filename) const
   if (mmapdata != NULL) {
     fprintf(stderr, "mmapped image - skipping WriteImage\n");
   } else {
-    int fd = 1; // stdout
+    long fd = 1; // stdout
     char header[128];
     size_t datasize;
     if (filename != NULL) {
