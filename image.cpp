@@ -297,19 +297,19 @@ void Image::AddGrid(double gridx, double gridy, const Rgb& color)
   for (int y = 0; y < height; y++) {
     for (double xgrad = 0.0; ROUND(xgrad) < width; xgrad += xstep) {
       int x = int(ROUND(xgrad));
-      SetRgb(y * width + x, color);
+      SetRgb((long) y * width + x, color);
     }
   }
   for (double ygrad = 0.0; ROUND(ygrad) < height; ygrad += ystep) {
     int y = int(ROUND(ygrad));
     for (int x = 0; x < width; x++) {
-      SetRgb(y * width + x, color);
+      SetRgb((long) y * width + x, color);
     }
   }
 #if 0
   int y = int(ROUND(height/2.0 - greenwichlat * height / pi));
   for (int x = 0; x < width; x++) {
-    SetRgb(y * width + x, red);
+    SetRgb((long) y * width + x, red);
   }
 #endif
 }
@@ -326,7 +326,7 @@ void Image::Map (MapFunction& f, double xoff, double yoff)
     for (int x = 0; x < width; x++) {
       double x0 = (x-hw)*scale+xoff;
       //fprintf (stderr, "%d %d %f %f\n", x,y,x0,y0);
-      SetRgb(y*width+x, f(x0,y0));
+      SetRgb((long) y*width+x, f(x0,y0));
     }
   }
 }
