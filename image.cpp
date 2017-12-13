@@ -119,15 +119,15 @@ void Image::Create(int w, int h)
 {
   width = w;
   height = h;
-  data = new char[width * height * 3];
+  data = new char[(long) width * height * 3];
 }
 
 void Image::Copy (const Image& image) {
   if (data == NULL) {
     width = image.width;
     height = image.height;
-    data = new char[width * height * 3];
-    memcpy(data, image.data, width * height * 3);
+    data = new char[(long) width * height * 3];
+    memcpy(data, image.data,(long) width * height * 3);
   } else {
     for (int y = 0; y < height && y < image.height; y++) {
       for (int x = 0; x < width && x < image.width; x++) {
@@ -158,7 +158,7 @@ void Image::Close()
 
 void Image::Fill (const Rgb& value)
 {
-  for (int i = 0; i < width * height; i++) {
+  for (long i = 0; i < (long) width * height; i++) {
     SetRgb(i,value);
   }
 }
@@ -202,7 +202,7 @@ void Image::Read (const char* filename, bool writeable)
   char *fileend = NULL;
   char *fileptr = NULL;
   char linebuffer[LINELENGTH];
-  int w; int h; int ncolors; int datasize;
+  int w; int h; int ncolors; long datasize;
 
   fd = open(filename, writeable ? O_RDWR : O_RDONLY);
   if (fd < 0) {
@@ -239,7 +239,7 @@ void Image::Read (const char* filename, bool writeable)
   if (ncolors != 255){
     error("Unexpected number of colors\n");
   }
-  datasize = w*h*3;
+  datasize = (long) w*h*3;
   // Now we hope that fileptr is pointing at the rgb data
   if (fileend - fileptr != datasize) {
     error("Not enough data in file\n");
@@ -272,7 +272,7 @@ void Image::Write (const char* filename) const
     if (write(fd, header, strlen(header)) < 0) {
       syserror("write failed");
     }
-    datasize = width * height * 3;
+    datasize = (long) width * height * 3;
     char *dataptr = data;
     while (datasize > 0) {
       ssize_t written = write(fd, dataptr, datasize);
@@ -297,19 +297,19 @@ void Image::AddGrid(double gridx, double gridy, const Rgb& color)
   for (int y = 0; y < height; y++) {
     for (double xgrad = 0.0; ROUND(xgrad) < width; xgrad += xstep) {
       int x = int(ROUND(xgrad));
-      SetRgb(y * width + x, color);
+      SetRgb((long) y * width + x, color);
     }
   }
   for (double ygrad = 0.0; ROUND(ygrad) < height; ygrad += ystep) {
     int y = int(ROUND(ygrad));
     for (int x = 0; x < width; x++) {
-      SetRgb(y * width + x, color);
+      SetRgb((long) y * width + x, color);
     }
   }
 #if 0
   int y = int(ROUND(height/2.0 - greenwichlat * height / pi));
   for (int x = 0; x < width; x++) {
-    SetRgb(y * width + x, red);
+    SetRgb((long) y * width + x, red);
   }
 #endif
 }
@@ -326,7 +326,7 @@ void Image::Map (MapFunction& f, double xoff, double yoff)
     for (int x = 0; x < width; x++) {
       double x0 = (x-hw)*scale+xoff;
       //fprintf (stderr, "%d %d %f %f\n", x,y,x0,y0);
-      SetRgb(y*width+x, f(x0,y0));
+      SetRgb((long) y*width+x, f(x0,y0));
     }
   }
 }
@@ -424,10 +424,10 @@ void Image::PlotLineAux(double t0, double t1,
     // Consider whether to recurse
     // If both points are off to one side or above or below the image,
     // don't recurse, we assume that the line doesn't pass through.
-    int sidex0 = (x0 > width + margin) ? 1 : (x0 < -margin) ? -1 : 0;
-    int sidey0 = (y0 > height + margin) ? 1 : (y0 < -margin) ? -1 : 0;
-    int sidex1 = (x1 > width + margin) ? 1 : (x1 < -margin) ? -1 : 0;
-    int sidey1 = (y1 > height + margin) ? 1 : (y1 < -margin) ? 1 : 0;
+    long sidex0 = (x0 > width + margin) ? 1 : (x0 < -margin) ? -1 : 0;
+    long sidey0 = (y0 > height + margin) ? 1 : (y0 < -margin) ? -1 : 0;
+    long sidex1 = (x1 > width + margin) ? 1 : (x1 < -margin) ? -1 : 0;
+    long sidey1 = (y1 > height + margin) ? 1 : (y1 < -margin) ? 1 : 0;
     if ((defined0 || defined1) && sidex0 * sidex1 + sidey0 * sidey1 <= 0) {
 #if 0
       double t2 = (t0 + t0 + t1) / 3;
