@@ -158,7 +158,7 @@ void Image::Close()
 
 void Image::Fill (const Rgb& value)
 {
-  for (int i = 0; i < width * height; i++) {
+  for (long i = 0; i < (long) width * height; i++) {
     SetRgb(i,value);
   }
 }
@@ -195,7 +195,7 @@ static void GetLine (char* &dataptr, char* dataend,
 // In header, blank lines & lines starting with '#' are ignored
 void Image::Read (const char* filename, bool writeable)
 {
-  long fd = -1;
+  int fd = -1;
   struct stat filestat;
   size_t filesize = 0;
   char *filebuffer = NULL;
@@ -254,7 +254,7 @@ void Image::Write (const char* filename) const
   if (mmapdata != NULL) {
     fprintf(stderr, "mmapped image - skipping WriteImage\n");
   } else {
-    long fd = 1; // stdout
+    int fd = 1; // stdout
     char header[128];
     size_t datasize;
     if (filename != NULL) {
