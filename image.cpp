@@ -119,15 +119,15 @@ void Image::Create(int w, int h)
 {
   width = w;
   height = h;
-  data = new char[width * height * 3];
+  data = new char[(long) width * height * 3];
 }
 
 void Image::Copy (const Image& image) {
   if (data == NULL) {
     width = image.width;
     height = image.height;
-    data = new char[width * height * 3];
-    memcpy(data, image.data, width * height * 3);
+    data = new char[(long) width * height * 3];
+    memcpy(data, image.data,(long) width * height * 3);
   } else {
     for (int y = 0; y < height && y < image.height; y++) {
       for (int x = 0; x < width && x < image.width; x++) {
@@ -424,10 +424,10 @@ void Image::PlotLineAux(double t0, double t1,
     // Consider whether to recurse
     // If both points are off to one side or above or below the image,
     // don't recurse, we assume that the line doesn't pass through.
-    int sidex0 = (x0 > width + margin) ? 1 : (x0 < -margin) ? -1 : 0;
-    int sidey0 = (y0 > height + margin) ? 1 : (y0 < -margin) ? -1 : 0;
-    int sidex1 = (x1 > width + margin) ? 1 : (x1 < -margin) ? -1 : 0;
-    int sidey1 = (y1 > height + margin) ? 1 : (y1 < -margin) ? 1 : 0;
+    long sidex0 = (x0 > width + margin) ? 1 : (x0 < -margin) ? -1 : 0;
+    long sidey0 = (y0 > height + margin) ? 1 : (y0 < -margin) ? -1 : 0;
+    long sidex1 = (x1 > width + margin) ? 1 : (x1 < -margin) ? -1 : 0;
+    long sidey1 = (y1 > height + margin) ? 1 : (y1 < -margin) ? 1 : 0;
     if ((defined0 || defined1) && sidex0 * sidex1 + sidey0 * sidey1 <= 0) {
 #if 0
       double t2 = (t0 + t0 + t1) / 3;
