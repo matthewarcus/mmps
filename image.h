@@ -71,7 +71,7 @@ class LinePlotter
 class MapFunction
 {
  public:
-  virtual double Scale(int width, int height) = 0;
+  virtual double Scale(long width, long height) = 0;
   virtual void InitY(double y) = 0;
   virtual Rgb operator()(double x, double y) const = 0;
   virtual ~MapFunction(){};
@@ -80,32 +80,32 @@ class MapFunction
 // An image, typically the data is mmapped to a file
 class Image {
  public:
-  Image(int width = 0, int height = 0);
+  Image(long width = 0, long height = 0);
   ~Image();
   void Copy (const Image& image);
   void Read (const char *filename, bool writeable = false);
-  void Create(int width, int height);
+  void Create(long width, long height);
   void Write (const char *filename) const;
   void Close ();
   void Map (MapFunction& f, double xoff, double yoff);
   // Add a latitude, longitude grid to the image
   void AddGrid(double gridx, double gridy, const Rgb& color);
-  void DrawLine(int x0, int y0, int x1, int y2, const Rgb& color);
+  void DrawLine(long x0, long y0, long x1, long y2, const Rgb& color);
   void PlotLine(double t0, double t1, const LinePlotter& lineplotter,
 		const Rgb& color, int numinitialpoints = 29); // Why 29?
 
   void PlotPoint(double x, double y, int r, const Rgb &rgb);
 
-  inline int Height() const { return height; };
-  inline int Width() const { return width; };
+  inline long Height() const { return height; };
+  inline long Width() const { return width; };
   
   void Fill (const Rgb& value);
-  inline void CheckSetRgb(int i, int j, const Rgb& rgb) {
+  inline void CheckSetRgb(long i, long j, const Rgb& rgb) {
     if (i >= 0 && i < width && j >= 0 && j < height) {
       SetRgb(j * width + i, rgb);
     }
   }
-  inline void CheckGetRgb(int i, int j, Rgb& rgb) {
+  inline void CheckGetRgb(long i, long j, Rgb& rgb) {
     if (i >= 0 && i < width && j >= 0 && j < height) {
       GetRgb(j * width + i, rgb);
     }
@@ -113,13 +113,13 @@ class Image {
       rgb = Rgb(0,0,0);
     }
   }
-  inline void SetRgb(int i, int j, const Rgb& rgb) {
+  inline void SetRgb(long i, long j, const Rgb& rgb) {
     SetRgb(j * width + i, rgb);
   }
-  inline void GetRgb(int i, int j, Rgb& rgb) const {
+  inline void GetRgb(long i, long j, Rgb& rgb) const {
     GetRgb(j * width + i, rgb);
   }
-  inline void SetRgb(int i, const Rgb& rgb) {
+  inline void SetRgb(long i, const Rgb& rgb) {
 #if defined UNALIGNED
     Rgb* p = reinterpret_cast<Rgb *>(data+i+i+i);
     *p = rgb;
@@ -130,7 +130,7 @@ class Image {
     *p = rgb.b;
 #endif
   }
-  inline void GetRgb(int i, Rgb& rgb) const {
+  inline void GetRgb(long i, Rgb& rgb) const {
 #if defined UNALIGNED
     Rgb* p = reinterpret_cast<Rgb*>(data+i+i+i);
     rgb = *p;
@@ -152,8 +152,8 @@ class Image {
   Image(const Image&);
   Image &operator=(const Image&);
  private:
-  int width;
-  int height;
+  long width;
+  long height;
   char *data;
   void *mmapdata;
   unsigned long mmapsize;

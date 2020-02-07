@@ -102,7 +102,7 @@ int RgbSpec::ReadOpt(int &argc, char** &argv) {
   }
 }
 
-Image::Image(int w, int h)
+Image::Image(long w, long h)
   : width(0), height(0), data(0), mmapdata(0), mmapsize(0)
 {
   if (w != 0) {
@@ -115,7 +115,7 @@ Image::~Image()
   Close();
 }
 
-void Image::Create(int w, int h) 
+void Image::Create(long w, long h) 
 {
   width = w;
   height = h;
@@ -129,8 +129,8 @@ void Image::Copy (const Image& image) {
     data = new char[(long) width * height * 3];
     memcpy(data, image.data,(long) width * height * 3);
   } else {
-    for (int y = 0; y < height && y < image.height; y++) {
-      for (int x = 0; x < width && x < image.width; x++) {
+    for (long y = 0; y < height && y < image.height; y++) {
+      for (long x = 0; x < width && x < image.width; x++) {
 	Rgb rgb;
 	image.GetRgb(x,y,rgb);
 	SetRgb(x,y,rgb);
@@ -202,7 +202,7 @@ void Image::Read (const char* filename, bool writeable)
   char *fileend = NULL;
   char *fileptr = NULL;
   char linebuffer[LINELENGTH];
-  int w; int h; int ncolors; long datasize;
+  long w; long h; int ncolors; long datasize;
 
   fd = open(filename, writeable ? O_RDWR : O_RDONLY);
   if (fd < 0) {
@@ -229,7 +229,7 @@ void Image::Read (const char* filename, bool writeable)
   fileptr = filebuffer + 2;
   fileend = filebuffer + filesize;
   GetLine(fileptr, fileend, linebuffer, LINELENGTH);
-  if (sscanf(linebuffer, "%d %d", &w, &h) != 2){
+  if (sscanf(linebuffer, "%ld %ld", &w, &h) != 2){
     error("Invalid file\n");
   }
   GetLine(fileptr, fileend, linebuffer, LINELENGTH);
@@ -268,7 +268,7 @@ void Image::Write (const char* filename) const
     // Set the output type to binary, not text.
     setmode(fd,O_BINARY);
 #endif
-    sprintf(header, "P6\n%d %d\n255\n", width, height);
+    sprintf(header, "P6\n%ld %ld\n255\n", width, height);
     if (write(fd, header, strlen(header)) < 0) {
       syserror("write failed");
     }
@@ -294,21 +294,21 @@ void Image::AddGrid(double gridx, double gridy, const Rgb& color)
   double ystep = gridy * height/180.0;
   double xstep = gridx * width/360.0;
   // Quicker this way around with big images
-  for (int y = 0; y < height; y++) {
+  for (long y = 0; y < height; y++) {
     for (double xgrad = 0.0; ROUND(xgrad) < width; xgrad += xstep) {
-      int x = int(ROUND(xgrad));
+      long x = long(ROUND(xgrad));
       SetRgb((long) y * width + x, color);
     }
   }
   for (double ygrad = 0.0; ROUND(ygrad) < height; ygrad += ystep) {
-    int y = int(ROUND(ygrad));
-    for (int x = 0; x < width; x++) {
+    long y = long(ROUND(ygrad));
+    for (long x = 0; x < width; x++) {
       SetRgb((long) y * width + x, color);
     }
   }
 #if 0
-  int y = int(ROUND(height/2.0 - greenwichlat * height / pi));
-  for (int x = 0; x < width; x++) {
+  long y = long(ROUND(height/2.0 - greenwichlat * height / pi));
+  for (long x = 0; x < width; x++) {
     SetRgb((long) y * width + x, red);
   }
 #endif
@@ -320,10 +320,10 @@ void Image::Map (MapFunction& f, double xoff, double yoff)
   double hw = width/2;
   double scale = f.Scale(width,height);
   //fprintf(stderr, "%f %f %f\n", xoff, yoff, scale);
-  for (int y = 0; y < height; y++) {
+  for (long y = 0; y < height; y++) {
     double y0 = (hh-y)*scale+yoff;
     f.InitY(y0);
-    for (int x = 0; x < width; x++) {
+    for (long x = 0; x < width; x++) {
       double x0 = (x-hw)*scale+xoff;
       //fprintf (stderr, "%d %d %f %f\n", x,y,x0,y0);
       SetRgb((long) y*width+x, f(x0,y0));
@@ -331,19 +331,19 @@ void Image::Map (MapFunction& f, double xoff, double yoff)
   }
 }
 
-void Image::DrawLine(int x0, int y0, int x1, int y1, const Rgb& rgb)
+void Image::DrawLine(long x0, long y0, long x1, long y1, const Rgb& rgb)
 {
-  int nx = abs(x1 - x0) + 1;
-  int ny = abs(y1 - y0) + 1;
+  long nx = abs(x1 - x0) + 1;
+  long ny = abs(y1 - y0) + 1;
   if (ny > nx) {
     int xinc = (x0 > x1) ? -1 : 1;
     int yinc = (y0 > y1) ? -1 : 1;
-    int x = x0;
-    int c = 0;
-    for (int y = y0; y != y1+yinc; y+=yinc) {
+    long x = x0;
+    long c = 0;
+    for (long y = y0; y != y1+yinc; y+=yinc) {
       CheckSetRgb(x,y,rgb);
       if ((xinc == 1 && x > x1) || (xinc == -1 && x < x1) ) {
-	fprintf(stderr, "Oops 1: %d %d %d %d %d\n", x0, y0, x1, y1, x);
+	fprintf(stderr, "Oops 1: %ld %ld %ld %ld %ld\n", x0, y0, x1, y1, x);
 	error("Foo");
       }
       c += nx;
@@ -355,12 +355,12 @@ void Image::DrawLine(int x0, int y0, int x1, int y1, const Rgb& rgb)
   } else {
     int xinc = (x0 > x1) ? -1 : 1;
     int yinc = (y0 > y1) ? -1 : 1;
-    int y = y0;
-    int c = 0;
-    for (int x = x0; x != x1+xinc; x+=xinc) {
+    long y = y0;
+    long c = 0;
+    for (long x = x0; x != x1+xinc; x+=xinc) {
       CheckSetRgb(x,y,rgb);
       if ((yinc == 1 && y > y1) || (yinc == -1 && y < y1) ) {
-	fprintf(stderr, "Oops 2: %d %d %d %d %d\n", x0, y0, x1, y1, y);
+	fprintf(stderr, "Oops 2: %ld %ld %ld %ld %ld\n", x0, y0, x1, y1, y);
 	error("Foo");
       }
       c += ny;
@@ -377,7 +377,7 @@ void Image::PlotPoint(double x, double y, int r, const Rgb &rgb)
   //fprintf(stderr,"%g %g %g\n",x,y,r);
   for (int j = -r; j <= r; j ++) {
     for (int i = -r; i <= r; i++) {
-      CheckSetRgb(int(ROUND(x+i)),int(ROUND(y+j)),rgb);
+      CheckSetRgb(long(ROUND(x+i)),long(ROUND(y+j)),rgb);
     }
   }
 }
@@ -412,10 +412,10 @@ void Image::PlotLineAux(double t0, double t1,
   bool defined1 = lineplotter.GetXY(t1, x1, y1);
   // This really ought to take note of the curvature.
   if (defined0 && defined1 && fabs (x0-x1) + fabs(y0-y1) < 10) {
-    int ix0 = int(ROUND(x0));
-    int iy0 = int(ROUND(y0));
-    int ix1 = int(ROUND(x1));
-    int iy1 = int(ROUND(y1));
+    long ix0 = long(ROUND(x0));
+    long iy0 = long(ROUND(y0));
+    long ix1 = long(ROUND(x1));
+    long iy1 = long(ROUND(y1));
     DrawLine(ix0,iy0,ix1,iy1,color);
     //CheckSetRgb(ix0,iy0,Rgb(255,255,255));
     //CheckSetRgb(ix1,iy1,Rgb(255,255,255));
