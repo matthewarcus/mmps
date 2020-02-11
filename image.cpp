@@ -22,6 +22,7 @@
 #if defined O_BINARY
 #include <io.h>
 #endif
+#include <algorithm>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -275,7 +276,9 @@ void Image::Write (const char* filename) const
     datasize = (long) width * height * 3;
     char *dataptr = data;
     while (datasize > 0) {
-      ssize_t written = write(fd, dataptr, datasize);
+      size_t MAXDATA = 64UL*1024*1024;
+      ssize_t written = write(fd, dataptr, std::min(MAXDATA,datasize));
+      fprintf(stderr,"%zd bytes written\n", written);
       if (written < 0) {
 	syserror("write failed");
       }
