@@ -1,5 +1,7 @@
 # $Revision: 1.7 $
 # MMPS main makefile
+# (c) 2004-2022 Matthew Arcus
+# MIT License
 
 EXES := project addgrid stars testimage circularize combine
 OBJS := matrix.o transform.o equations.o utils.o image.o

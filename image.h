@@ -1,15 +1,8 @@
 // $Revision: 1.4 $
 // image.h
-// (C) 2004 by Matthew Arcus
+// (c) 2004-2022 Matthew Arcus
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+// MIT License
 
 #if !defined IMAGE_H
 #define IMAGE_H
@@ -87,7 +80,7 @@ class Image {
   void Create(long width, long height);
   void Write (const char *filename) const;
   void Close ();
-  void Map (MapFunction& f, double xoff, double yoff);
+  void MapX (MapFunction& f, double xoff, double yoff);
   // Add a latitude, longitude grid to the image
   void AddGrid(double gridx, double gridy, const Rgb& color);
   void DrawLine(long x0, long y0, long x1, long y2, const Rgb& color);

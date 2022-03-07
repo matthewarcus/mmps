@@ -1,15 +1,8 @@
 // $Revision: 1.3 $
 // image.cpp
-// (C) 2004 by Matthew Arcus
+// (c) 2004-2022 Matthew Arcus
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+// MIT License
 
 #include <string.h>
 #include <unistd.h>
@@ -317,7 +310,8 @@ void Image::AddGrid(double gridx, double gridy, const Rgb& color)
 #endif
 }
 
-void Image::Map (MapFunction& f, double xoff, double yoff)
+// Not used AFAICS
+void Image::MapX (MapFunction& f, double xoff, double yoff)
 {
   double hh = height/2;
   double hw = width/2;
