@@ -920,7 +920,7 @@ void Mollweide::CalcParams(double phi, double& a)
 void Mollweide::Init(const TransformParams& params)
 {
   CylindricalTransform::Init(params);
-  double phi = params.p;
+  double phi = radians(40.73333); //params.p;
   CalcParams(phi, a);
 }
 
@@ -1153,6 +1153,8 @@ void Transform::DoCommands (Image& image,
       cmdparams.gridx = atoi(cmdlist[i][1].c_str());
     } else if (cmd == "gridy") {
       cmdparams.gridy = atoi(cmdlist[i][1].c_str());
+    } else if (cmd == "gridoff") {
+      cmdparams.gridoff = atoi(cmdlist[i][1].c_str());
     } else if (cmd == "temporaryhours") {
       DrawTemporaryHours(image,params,cmdparams);
     } else if (cmd == "localhours") {
@@ -1203,14 +1205,18 @@ void Transform::DrawGrid (Image& image,
 {
   int gridx = cmdparams.gridx;
   int gridy = cmdparams.gridy;
+  int gridoff = cmdparams.gridoff;
+  double loff = 2*pi*gridoff/360.0;
+  //loff = 0.1;
+  fprintf(stderr,"%g\n",loff);
   int nx = 360/gridx;
   int ny = 180/gridy;
   for (int i = 0; i < nx; i++) {
     LatPlotter latplotter(image, params, *this);
-    double lambda = (i - nx/2) * 2 * pi / nx;
+    double lambda = (i - nx/2) * 2 * pi / nx + loff;
     latplotter.lambda = lambda;
     // Omit the last section of the lines of latitude.
-    //image.PlotLine(-pi/2+radians(gridy), pi/2-radians(gridy), latplotter, cmdparams.color);
+    //image.PlotLine(-pi/2+radians(gridy), pi/2-radians(gridy), latplotter, cmdparams.color, 16);
     image.PlotLine(-pi/2, pi/2, latplotter, cmdparams.color, 16);
   }
   LongPlotter longplotter(image, params, *this);
@@ -1268,6 +1274,10 @@ void Transform::DrawTropics(Image& image,
   longplotter.phi = inclination;
   image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
   longplotter.phi = -inclination;
+  image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
+  longplotter.phi = 0.5*pi-inclination;
+  image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
+  longplotter.phi = inclination-0.5*pi;
   image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
 }
 
