@@ -1165,6 +1165,8 @@ void Transform::DoCommands (Image& image,
       DrawAnalemma(image,params,cmdparams);
     } else if (cmd == "tropics") {
       DrawTropics(image,params,cmdparams);
+    } else if (cmd == "arctics") {
+      DrawArctics(image,params,cmdparams);
     } else if (cmd == "dateline") {
       double p = strtod(cmdlist[i][1].c_str(),NULL);
       DrawDateline(image,params,cmdparams, p);
@@ -1207,8 +1209,6 @@ void Transform::DrawGrid (Image& image,
   int gridy = cmdparams.gridy;
   int gridoff = cmdparams.gridoff;
   double loff = 2*pi*gridoff/360.0;
-  //loff = 0.1;
-  fprintf(stderr,"%g\n",loff);
   int nx = 360/gridx;
   int ny = 180/gridy;
   for (int i = 0; i < nx; i++) {
@@ -1275,6 +1275,13 @@ void Transform::DrawTropics(Image& image,
   image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
   longplotter.phi = -inclination;
   image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
+}
+
+void Transform::DrawArctics(Image& image, 
+			    const TransformParams& params,
+			    const CmdParams &cmdparams) const
+{
+  LongPlotter longplotter(image, params, *this);
   longplotter.phi = 0.5*pi-inclination;
   image.PlotLine(-pi, pi, longplotter, cmdparams.color,16);
   longplotter.phi = inclination-0.5*pi;

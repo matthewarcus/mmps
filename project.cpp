@@ -103,6 +103,7 @@ int main(int argc, char* argv[])
     new CmdSpec ("-altitudes",0),
     new CmdSpec ("-analemma",0),
     new CmdSpec ("-tropics",0),
+    new CmdSpec ("-arctics",0),
     new CmdSpec ("-dateline",1),
     new CmdSpec ("-datetime",1),
 

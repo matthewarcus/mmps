@@ -111,6 +111,9 @@ class Transform {
   void DrawTropics (Image& image, 
 		    const TransformParams& params,
 		    const CmdParams &cmdparams) const;
+  void DrawArctics (Image& image, 
+		    const TransformParams& params,
+		    const CmdParams &cmdparams) const;
   void DrawDateline (Image& image, 
 		     const TransformParams& params,
 		     const CmdParams &cmdparams,
